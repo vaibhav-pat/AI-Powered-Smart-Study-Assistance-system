@@ -1,0 +1,51 @@
+services:
+  # Frontend - React Application
+  - type: web
+    name: rag-notes-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://rag-notes-backend.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # Backend - Node.js/Express API
+  - type: web
+    name: rag-notes-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false  # You'll set this in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: AI_BACKEND_URL
+        value: https://rag-notes-ai-backend.onrender.com
+
+  # AI Backend - Python/FastAPI
+  - type: web
+    name: rag-notes-ai-backend
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: cd ai-backend && pip install -r requirements.txt
+    startCommand: cd ai-backend && uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false  # You'll set this in Render dashboard
+      - key: CHROMA_PERSIST_DIRECTORY
+        value: ./vector_store
+      - key: PORT
+        value: 8000
+
