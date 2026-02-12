@@ -1,0 +1,19 @@
+# ========================
+# Root Level
+# ========================
+.DS_Store
+.env
+.vscode/
+.idea/
+
+# ========================
+# Backend (Node.js)
+# ========================
+backend/node_modules/
+backend/.env
+backend/.env.local
+backend/.env.production
+ai-backend/rag_env
+ai-backend/__pycache__/
+frontend/node_modules/
+ai-backend/vector_store/
